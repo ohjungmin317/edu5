@@ -1,17 +1,19 @@
-apiVersion: route.openshift.io/v1
-kind: Route
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  labels:
-    app.kubernetes.io/component: server
-  name: nginx-route-edu18
+  name: mynginx-traefik-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: "/"
+    kubernetes.io/ingress.class: traefik
 spec:
-  host: nginx
-  port:
-    targetPort: http
-  tls:
-    termination: edge
-  to:
-    kind: Service
-    name: mynginx
-    weight: 100
-  wildcardPolicy: None
+  rules:
+  - host: mynginx.210.106.105.165.sslip.io
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mynginx
+            port:
+              number: 80
